@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>imgset — srcset用の画像とHTMLをドラッグ1回で</title>
+<meta name="description" content="画像をドラッグするだけで、srcset用の複数サイズ・WebPへの変換・&lt;picture&gt;タグの生成までまとめて行います。画像はブラウザの外に出ません。">
+<link rel="stylesheet" href="styles.css">
+<script src="vendor/jszip.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>imgset</h1>
+  <p class="lead">srcset用の画像とHTML、ドラッグ1回で全部出す。</p>
+  <p class="sub">4サイズ分の書き出しと <code>&lt;picture&gt;</code> タグの記述を、1回のドラッグで終わらせる。<br>
+    無料・会員登録なし。<strong>画像はブラウザの外に出ません。</strong></p>
+</header>
+
+<main>
+  <section id="dropzone" class="dropzone" tabindex="0" role="button"
+           aria-label="画像を選択またはドラッグ＆ドロップ">
+    <p class="dropzone-main">ここに画像をドラッグ</p>
+    <p class="dropzone-sub">クリックして選択／貼り付け（Ctrl+V）もできます</p>
+    <input type="file" id="file-input" accept="image/*" multiple hidden>
+  </section>
+
+  <p id="capability-warning" class="warning" role="alert" hidden></p>
+
+  <details id="settings" class="settings">
+    <summary>設定（触らなくても動きます）</summary>
+    <div class="settings-body">
+      <label class="field">
+        <span>出力する幅（カンマ区切り）</span>
+        <input type="text" id="set-widths" value="320, 640, 1024, 1920" inputmode="numeric">
+      </label>
+
+      <fieldset class="field">
+        <legend>形式</legend>
+        <label><input type="checkbox" id="set-webp" checked> WebP</label>
+        <label><input type="checkbox" id="set-jpeg" checked> JPEGフォールバック（最大幅のみ）</label>
+        <label><input type="checkbox" id="set-avif"> AVIF</label>
+        <p class="field-note">AVIFは最も軽くなりますが、初回のみ変換プログラム（約3.5MB）の読み込みが必要で、
+          書き出しに1枚あたり数秒かかります。</p>
+      </fieldset>
+
+      <label class="field">
+        <span>圧縮品質 <output id="set-quality-out">80</output></span>
+        <input type="range" id="set-quality" min="1" max="100" value="80">
+      </label>
+
+      <div class="field">
+        <label for="set-sizes-preset"><code>sizes</code> 属性</label>
+        <select id="set-sizes-preset">
+          <option value="100vw">全幅で表示</option>
+          <option value="(min-width: 768px) 720px, 100vw">本文幅（最大720px）</option>
+          <option value="(min-width: 768px) 50vw, 100vw">2カラム</option>
+          <option value="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw">3カラム</option>
+          <option value="custom">自由入力</option>
+        </select>
+        <label for="set-sizes" id="set-sizes-label" hidden><code>sizes</code> を自由入力</label>
+        <input type="text" id="set-sizes" value="100vw" hidden>
+      </div>
+
+      <label class="field checkbox-row">
+        <input type="checkbox" id="set-noupscale" checked>
+        <span>元画像より大きくしない</span>
+      </label>
+    </div>
+  </details>
+
+  <section id="progress" class="progress" hidden>
+    <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+    <p class="progress-text"><span id="progress-label" role="status" aria-live="polite">処理中…</span>
+      <button type="button" id="cancel-btn" class="btn btn-quiet">中断</button></p>
+  </section>
+
+  <section id="bulk" class="bulk" hidden>
+    <p id="bulk-summary" class="bulk-summary" role="status" aria-live="polite"></p>
+    <div class="bulk-actions">
+      <button type="button" id="zip-btn" class="btn btn-primary">すべてZIPでダウンロード</button>
+      <button type="button" id="copy-all-btn" class="btn">すべてのHTMLをコピー</button>
+      <button type="button" id="clear-btn" class="btn btn-quiet">クリア</button>
+    </div>
+  </section>
+
+  <section id="results" class="results"></section>
+</main>
+
+<footer class="site-footer">
+  <p>すべての処理はあなたのブラウザの中で完結します。開発者ツールのネットワークタブで、画像が送信されていないことを確認できます。</p>
+</footer>
+
+<template id="result-card-template">
+  <article class="card">
+    <div class="card-head">
+      <img class="card-thumb" alt="" width="96" height="96">
+      <div class="card-meta">
+        <p class="card-original"></p>
+        <label class="card-name">
+          <span>出力名</span>
+          <input type="text" class="card-name-input" spellcheck="false" autocomplete="off">
+        </label>
+        <p class="card-errors warning" hidden></p>
+      </div>
+    </div>
+    <div class="card-table-wrap">
+      <table class="card-table">
+        <thead><tr><th>ファイル名</th><th>幅</th><th>形式</th><th>容量</th><th>削減</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="card-html">
+      <div class="card-html-head">
+        <span>HTML</span>
+        <button type="button" class="btn btn-small card-copy">コピー</button>
+      </div>
+      <pre class="card-code" tabindex="0" role="region" aria-label="生成されたHTML"></pre>
+      <p class="card-note">※ <code>alt</code> は画像の内容に合わせて書き換えてください。装飾目的の画像なら空のままで構いません。</p>
+    </div>
+  </article>
+</template>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
