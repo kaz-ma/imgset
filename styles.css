@@ -282,8 +282,47 @@ fieldset.field label { display: block; }
   margin: 12px 0 0;
 }
 
+/* ---------- 説明セクション ---------- */
+.lp {
+  max-width: 860px;
+  margin: 72px auto 0;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+.lp-section { margin-top: 48px; }
+.lp-section h2 {
+  font-size: clamp(1.15rem, 3.5vw, 1.45rem);
+  letter-spacing: -0.01em;
+  margin: 0 0 14px;
+}
+.lp-section p { margin: 0 0 12px; }
+.lp-section ul { margin: 0 0 12px; padding-left: 1.3em; }
+.lp-section li { margin-bottom: 4px; }
+
+.lp-code {
+  margin: 0;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.lp-features, .lp-faq { margin: 0; }
+.lp-features dt, .lp-faq dt { font-weight: 600; margin-top: 20px; }
+.lp-features dd, .lp-faq dd { margin: 4px 0 0; color: var(--muted); }
+.lp-faq dt::before { content: "Q. "; color: var(--accent); }
+
+.lp-steps { margin: 0; padding-left: 1.4em; }
+.lp-steps li { margin-bottom: 8px; }
+
 .site-footer {
-  margin-top: 56px;
+  max-width: 860px;
+  margin: 56px auto 0;
   padding-top: 20px;
   border-top: 1px solid var(--line);
   color: var(--muted);

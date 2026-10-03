@@ -87,6 +87,88 @@
   <section id="results" class="results"></section>
 </main>
 
+<div class="lp">
+  <section class="lp-section">
+    <h2>画像1枚のために、何回書き出していますか</h2>
+    <p>レスポンシブ対応をきちんとやろうとすると、画像1枚につきこれだけの作業が発生します。</p>
+    <ul>
+      <li>320 / 640 / 1024 / 1920 の4サイズに縮小する</li>
+      <li>WebP や AVIF に変換する</li>
+      <li>古いブラウザ用に JPEG も残す</li>
+      <li>ファイル名を規則的に揃える</li>
+      <li><code>&lt;picture&gt;</code> タグを手で書く</li>
+    </ul>
+    <p><strong>画像10枚なら、90ファイル。</strong> 1枚ずつ設定して書き出していたら、1時間では終わりません。</p>
+    <p>だから多くの現場で、srcset対応は「やったほうがいいのは分かっているが、後回し」になります。</p>
+  </section>
+
+  <section class="lp-section">
+    <h2>ドラッグして、ダウンロードするだけ</h2>
+    <p>必要なサイズと形式の組み合わせを<strong>すべて一度に</strong>書き出し、
+      書き出したファイルに対応する <code>&lt;picture&gt;</code> タグを生成します。
+      コピーして貼れば、それで終わりです。</p>
+    <pre class="lp-code" tabindex="0" role="region" aria-label="生成されるHTMLの例">&lt;picture&gt;
+  &lt;source type="image/webp" srcset="hero-320.webp 320w, hero-640.webp 640w, hero-1024.webp 1024w, hero-1920.webp 1920w" sizes="100vw"&gt;
+  &lt;img src="hero-1920.jpg" alt="" width="1920" height="1080" loading="lazy" decoding="async"&gt;
+&lt;/picture&gt;</pre>
+  </section>
+
+  <section class="lp-section">
+    <h2>できること</h2>
+    <dl class="lp-features">
+      <dt>必要な組み合わせを、まとめて書き出す</dt>
+      <dd>サイズと形式を選ぶと、その全組み合わせを一度に生成します。既定値は 320 / 640 / 1024 / 1920 の WebP と、最大幅のJPEGフォールバック。</dd>
+
+      <dt>HTMLを書かなくていい</dt>
+      <dd>書き出したファイル名に対応した <code>&lt;picture&gt;</code> タグを生成します。ボタン1つでコピーできます。</dd>
+
+      <dt>寸法だけでなく、容量も落とす</dt>
+      <dd>サイズを縮めるだけではなく、圧縮品質を指定して再エンコードします。スマホで撮った4MBの写真が、数百KBになります。</dd>
+
+      <dt>位置情報を自動で削除</dt>
+      <dd>写真に埋め込まれた撮影場所などのEXIF情報は、書き出し時に取り除かれます。公開した画像から撮影場所が分かってしまう事故を防げます。</dd>
+
+      <dt>どれだけ軽くなったか見える</dt>
+      <dd>処理前後のファイルサイズを並べて表示します。削減率もそのまま出ます。</dd>
+
+      <dt>画像はどこにも送信されません</dt>
+      <dd>すべての処理がブラウザの中で完結します。サーバーへのアップロードは一切ありません。制作中の画像でも安心して使えます。</dd>
+    </dl>
+  </section>
+
+  <section class="lp-section">
+    <h2>使い方</h2>
+    <ol class="lp-steps">
+      <li><strong>画像をドラッグ＆ドロップ</strong>（複数まとめて可）</li>
+      <li><strong>設定を確認</strong>（そのままでよければ何も触らなくて構いません）</li>
+      <li><strong>ZIPでダウンロードし、HTMLをコピー</strong></li>
+    </ol>
+  </section>
+
+  <section class="lp-section">
+    <h2>よくある質問</h2>
+    <dl class="lp-faq">
+      <dt>本当に無料ですか</dt>
+      <dd>はい。会員登録も不要です。</dd>
+
+      <dt>画像がどこかに送信されることはありませんか</dt>
+      <dd>ありません。すべてブラウザ内で処理しています。開発者ツールのネットワークタブを開けば、画像が送信されていないことをご自分で確認できます。</dd>
+
+      <dt>AVIFには対応していますか</dt>
+      <dd>設定でAVIFにチェックを入れると追加されます。最も軽くなりますが、初回のみ変換プログラム（約3.5MB）の読み込みが必要で、書き出しに1枚あたり数秒かかるため、既定ではオフにしています。</dd>
+
+      <dt>AVIFに対応していないブラウザではどうなりますか</dt>
+      <dd>生成される <code>&lt;picture&gt;</code> タグは、AVIF → WebP → JPEG の順にフォールバックします。対応していないブラウザは自動的に次の形式を読み込みます。</dd>
+
+      <dt>何枚まで処理できますか</dt>
+      <dd>一度に50枚までを推奨しています。それ以上でも警告を出したうえで続行できますが、お使いのPCの性能により時間がかかります。</dd>
+
+      <dt>画質は落ちませんか</dt>
+      <dd>圧縮品質を指定できます。既定値は、目視で劣化が分かりにくく、かつ十分に軽くなる設定にしています。</dd>
+    </dl>
+  </section>
+</div>
+
 <footer class="site-footer">
   <p>すべての処理はあなたのブラウザの中で完結します。開発者ツールのネットワークタブで、画像が送信されていないことを確認できます。</p>
 </footer>
