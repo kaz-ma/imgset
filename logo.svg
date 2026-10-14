@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="imgset">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b85a2e"/>
+      <stop offset="1" stop-color="#8f3d1b"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#g)"/>
+  <!-- 3本のバーで「同じ画像の複数サイズ」を表す。16pxでも潰れない太さにしてある -->
+  <g fill="#fdf3ee">
+    <rect x="112" y="150" width="288" height="56" rx="16"/>
+    <rect x="112" y="228" width="208" height="56" rx="16"/>
+    <rect x="112" y="306" width="128" height="56" rx="16"/>
+  </g>
+</svg>
