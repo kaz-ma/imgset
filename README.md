@@ -8,6 +8,10 @@
 **画像はブラウザの外に出ません。** すべての処理がブラウザ内で完結し、サーバーへの送信は一切ありません。
 開発者ツールのネットワークタブを開けば、ご自分で確認できます。
 
+👉 **[kaz-ma.github.io/imgset/](https://kaz-ma.github.io/imgset/)**
+
+![imgset の画面](screenshot.png)
+
 ---
 
 ## なぜ作ったか
